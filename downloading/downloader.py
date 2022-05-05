@@ -18,7 +18,6 @@ os.environ["SPOTIPY_REDIRECT_URI"] = "http://localhost:8888"
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 
-
 def get_filepath_speaks(filename):
     return os.path.join(os.getcwd(),"downloading",filename)
 

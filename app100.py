@@ -32,7 +32,7 @@ app.layout = html.Div([html.Div([
     ),
     html.Table(dash_table.DataTable(id='datatable-upload-container'), style = {"width" : "85%", "margin" : "10px", "padding-right":"100px"} ),
     html.Button(id='submit-button-state2', n_clicks=0, children='Append speaks'),
-    html.Div(id='output-state'),html.Hr(), html.Table(table,style = {"width" : "85%"} ),
+    html.Div(id='output-state'),html.Hr(), html.Table(table,style = {"width" : "85%"},draggable = "true" ),
     html.Hr(),
     html.Button(id='submit-button-state3', n_clicks=0, children='Generate klub100'),
     html.Table(dash_table.DataTable(id='check-data-table'), style = {"width" : "85%", "margin" : "10px", "padding-right":"100px"} ),
@@ -43,6 +43,7 @@ app.layout = html.Div([html.Div([
 def read_zipdir(filepath):
     with ZipFile(filepath, "r") as zip:
         list = zip.namelist()
+        zip.extractall(os.path.join(os.getcwd(), "downloading"))
         modlist = []
         for item in list:
             modlist.append(item)
@@ -51,6 +52,7 @@ def read_zipdir(filepath):
 def extract_speakzip(filepath):
     with ZipFile(filepath, "r") as zip:
         list = zip.namelist()
+        zip.extractall(os.path.join(os.getcwd(), "downloading"))
         modlist = []
         for item in list:
             read_normalize(os.path.join(os.get(cwd),"downloading",item))
@@ -108,4 +110,4 @@ def save_test_data(n, data):
     return saved_test_data
 
 if __name__ == '__main__':
-    app.run_server(host = "127.0.0.1", port = 5000,debug=True,dev_tools_hot_reload=False)
+    app.run_server(host = "127.0.0.1", port = 5001,debug=True,dev_tools_hot_reload=False)
