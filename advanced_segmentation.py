@@ -11,24 +11,21 @@ import os
 from pydub import AudioSegment, effects
 
 
-duration = 100  # in seconds
+duration = 100  
 signal, sampling_rate = librosa.load(dst, duration=duration)
 
 display(Audio(data=signal, rate=sampling_rate))
 
 def gentempspecgram(signal, sampling_rate, type, plot=False):
-    # Compute the onset strength
     hop_length_tempo = 256
     oenv = librosa.onset.onset_strength(
         y=signal, sr=sampling_rate, hop_length=hop_length_tempo
     )
-    # Compute the tempogram
     if type == "temp":
         tempogram = librosa.feature.tempogram(
             onset_envelope=oenv, sr=sampling_rate, hop_length=hop_length_tempo,
         )
         if plot:
-            # Display the tempogram
             fig, ax = plt.subplots()
             _ = librosa.display.specshow(
                 tempogram,
@@ -60,13 +57,9 @@ def gentempspecgram(signal, sampling_rate, type, plot=False):
 
 
 def detect(tempspecgram, plot=False):
-    # Choose detection method
     algo = rpt.KernelCPD(kernel="linear").fit(tempspecgram.T)
 
-    # Choose the number of changes (elbow heuristic)
-    n_bkps_max = 20  # K_max
-    # Start by computing the segmentation with most changes.
-    # After start, all segmentations with 1, 2,..., K_max-1 changes are also available for free.
+    n_bkps_max = 20
     _ = algo.predict(n_bkps_max)
 
     array_of_n_bkps = np.arange(1, n_bkps_max + 1)
@@ -89,8 +82,6 @@ def detect(tempspecgram, plot=False):
         ax.set_title("Sum of costs")
         ax.grid(axis="x")
         ax.set_xlim(0, n_bkps_max + 1)
-
-        # Visually we choose n_bkps=5 (highlighted in red on the elbow plot)
         n_bkps = 7
 
         _ = ax.scatter([5], [get_sum_of_cost(algo=algo, n_bkps=5)], color="r", s=100)
@@ -98,9 +89,7 @@ def detect(tempspecgram, plot=False):
 
 
 def segmentate(n_bkps, tempspecgram, algo, sampling_rate, type, plot=False):
-    # Segmentation
     bkps = algo.predict(n_bkps=n_bkps)
-    # Convert the estimated change points (frame counts) to actual timestamps
     bkps_times = librosa.frames_to_time(
         bkps, sr=sampling_rate, hop_length=hop_length_tempo
     )
@@ -108,17 +97,14 @@ def segmentate(n_bkps, tempspecgram, algo, sampling_rate, type, plot=False):
         y_axis = "tempo"
     if type == "spec":
         y_axis = "mel"
-    # Displaying results
     fig, ax = plt.subplots()
     _ = librosa.display.specshow(
         tempspecgram,
         ax=ax,
         x_axis="s",
         y_axis=y_axis,
-        # hop_length=hop_length_tempo,
         sr=sampling_rate,
     )
-    # img = librosa.display.specshow(S_dB, x_axis='time', y_axis='mel', sr=sampling_rate, fmax=sampling_rate/2, ax=ax)
     for b in bkps_times[:-1]:
         ax.axvline(b, ls="--", color="white", lw=4)
     ax.set(xlim=(0, 100))
