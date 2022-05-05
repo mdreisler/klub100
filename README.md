@@ -1,4 +1,4 @@
-A klub100 generator:
+A klub100-mix generator:
 
 1. Put a folder of speaks somewhere in the repository and zip-compress it.
 2. Run app100.py (shows up in localhost:5000)
