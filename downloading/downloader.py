@@ -12,8 +12,8 @@ import pandas as pd
 
 scope = "user-library-read"
 
-os.environ["SPOTIPY_CLIENT_ID"] = "bb2c6b44486f48e982ba337608ca4e4a"
-os.environ["SPOTIPY_CLIENT_SECRET"] = "03dcde8defab4e80972adf4020bcba02"
+os.environ["SPOTIPY_CLIENT_ID"] = ""
+os.environ["SPOTIPY_CLIENT_SECRET"] = ""
 os.environ["SPOTIPY_REDIRECT_URI"] = "http://localhost:8888"
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
